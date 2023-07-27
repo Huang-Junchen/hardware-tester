@@ -1,4 +1,5 @@
 import pynvml
+from utils.Printer import print_info, print_err
 
 
 class GpuTester:
@@ -19,9 +20,9 @@ class GpuTester:
         """
         try:
             pynvml.nvmlInit()
-            print("[INFO] pynvml Initialized.")
+            print_info("[INFO] pynvml Initialized.")
         except Exception:
-            print(
+            print_err(
                 "[ERROR] NVML driver initialize failed. Maybe there is no GPU in this system or the GPU driver is not installed properly!")
 
     @staticmethod
@@ -86,11 +87,8 @@ class GpuTester:
         return statistic
 
     def print_info(self):
-        print("[INFO] Driver version: {}".format(self.drive_version))
-
-        print("[INFO] GPU Numbers: {}".format(str(self.num)))
-
-        print()
+        print_info("[INFO] GPU Numbers: {}".format(str(self.num)))
+        print_info("[INFO] Driver version: {}".format(self.drive_version))
 
 
 

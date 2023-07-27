@@ -4,6 +4,8 @@ import argparse
 from datetime import datetime
 from utils.CpuTester import CpuTester
 from utils.GpuTester import GpuTester
+from utils.Recoder import Recoder
+from utils.Printer import print_info, print_err, print_warn
 
 
 def get_args():
@@ -17,47 +19,27 @@ def get_args():
     return parser.parse_args()
 
 
-def write_record_file(file_handle, content):
-    file_handle.write(content + '\n')
-    print("[DEBUG] " + content + '\n')
-
-
-def generate_table_header(cpu_num, gpu_num=0):
-    cpu_header = ','.join(["cpu" + str(i) + "_temp,cpu" + str(i) + "_util" for i in range(cpu_num)])
-    gpu_header = ','.join(["gpu" + str(i) + "_util,gpu" + str(i) + "_mem_util,gpu" + str(i) + "_temp,gpu" + str(
-        i) + "_pw_usage,gpu" + str(i) + "_graphics_freq,gpu" + str(i) + "_sm_greq,gpu" + str(i) + "_mem_freq,gpu" + str(
-        i) + "_video_freq" for i in range(gpu_num)])
-    return 'datetime,' + cpu_header + ',' + gpu_header
-
-
-def open_log_handle(file_path):
-    if os.path.exists(file_path):
-        os.remove(file_path)
-    return open(file_path, 'a')
-
-
 def main():
     args = get_args()
     sample_interval = args.sample_interval
 
     log_file = args.log_file
-    log_file_handle = open_log_handle(log_file)
+    log = Recoder(log_file)
 
     cpu_tester = None
     gpu_tester = None
 
-    print()
     try:
         if not args.cpu_only:
-            print("[INFO] Start to record GPU/CPU temperature in every {} sec.".format(str(sample_interval)))
+            print_info("[INFO] Start to record GPU/CPU temperature in every {} sec.".format(str(sample_interval)))
             cpu_tester = CpuTester()
             gpu_tester = GpuTester()
-            write_record_file(log_file_handle, generate_table_header(cpu_tester.num, gpu_tester.num))
+            log.generate_table_header(cpu_tester.num, gpu_tester.num)
         else:
-            print("[WARN] Only collect CPU Temperature.")
-            print("[INFO] Start to record CPU temperature in every {} sec.".format(str(sample_interval)))
+            print_warn("[WARN] Only collect CPU Temperature.")
+            print_info("[INFO] Start to record CPU temperature in every {} sec.\033[0m".format(str(sample_interval)))
             cpu_tester = CpuTester()
-            write_record_file(log_file_handle, generate_table_header(cpu_tester.num))
+            log.generate_table_header(cpu_tester.num)
 
         while True:
             timestamp = str(datetime.now()).split('.')[0]
@@ -66,12 +48,12 @@ def main():
             if gpu_tester is not None:
                 data_row.extend(gpu_tester.get_statistics())
 
-            write_record_file(log_file_handle, ','.join(data_row))
+            log.write_record_file(','.join(data_row))
             time.sleep(sample_interval)
 
     except KeyboardInterrupt:
         print()
-        print("[ERROR] Keyboard Interrupted, temperature recording program exit.")
+        print_err("[ERROR] Keyboard Interrupted, temperature recording program exit.")
         exit()
 
 

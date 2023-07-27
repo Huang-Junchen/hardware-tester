@@ -1,6 +1,6 @@
 import subprocess
 import psutil
-
+from utils.Printer import print_info
 
 class CpuTester:
     def __init__(self):
@@ -66,5 +66,4 @@ class CpuTester:
         return statistics
 
     def print_info(self):
-        print("[INFO] CPU Numbers: {}".format(str(self.num)))
-        print()
+        print_info("[INFO] CPU Numbers: {}".format(str(self.num)))
