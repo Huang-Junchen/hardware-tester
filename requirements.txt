@@ -1,2 +1,4 @@
 psutil==5.9.5
 pynvml==11.5.0
+matplotlib
+PyQt5
