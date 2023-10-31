@@ -21,7 +21,10 @@ class PerformanceMonitorApp(QMainWindow):
 
         self.cpu_tester = CpuTester()
         self.cpu_num = self.cpu_tester.num
-        self.gpu_tester = GpuTester()
+        try:
+            self.gpu_tester = GpuTester()
+        except:
+            print("fsdafas")
         self.gpu_num = self.gpu_tester.num
         self.data = []
 
@@ -166,6 +169,8 @@ class PerformanceMonitorApp(QMainWindow):
         self.remaining_seconds -= 1
         self.countdown.setValue(self.remaining_seconds)
         if self.remaining_seconds == 0:
+            # TODO 关闭压力测试线程
+
             self.timer.stop()
             self.countdown.setValue(60)
             self.cpu_checkbox.setEnabled(True)
@@ -179,6 +184,8 @@ class PerformanceMonitorApp(QMainWindow):
         # memory_info = psutil.virtual_memory().percent
         # self.cpu_chart.add_data(float(cpu_temperature[0]))
         # self.gpu_chart.add_data(memory_info)
+
+        # TODO 创建压力测试线程
 
         timestamp = str(datetime.now()).split('.')[0]
         data_row = [timestamp]
