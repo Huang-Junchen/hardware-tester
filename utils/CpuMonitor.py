@@ -2,7 +2,8 @@ import subprocess
 import psutil
 from utils.Printer import print_info
 
-class CpuTester:
+
+class CpuMonitor:
     def __init__(self):
         self.num = self.get_num()
 

@@ -2,8 +2,8 @@ import os
 import time
 import argparse
 from datetime import datetime
-from utils.CpuTester import CpuTester
-from utils.GpuTester import GpuTester
+from utils.CpuMonitor import CpuMonitor
+from utils.GpuMonitor import GpuMonitor
 from utils.Recoder import Recoder
 from utils.Printer import print_info, print_err, print_warn
 
@@ -32,13 +32,13 @@ def main():
     try:
         if not args.cpu_only:
             print_info("[INFO] Start to record GPU/CPU temperature in every {} sec.".format(str(sample_interval)))
-            cpu_tester = CpuTester()
-            gpu_tester = GpuTester()
+            cpu_tester = CpuMonitor()
+            gpu_tester = GpuMonitor()
             log.generate_table_header(cpu_tester.num, gpu_tester.num)
         else:
             print_warn("[WARN] Only collect CPU Temperature.")
             print_info("[INFO] Start to record CPU temperature in every {} sec.\033[0m".format(str(sample_interval)))
-            cpu_tester = CpuTester()
+            cpu_tester = CpuMonitor()
             log.generate_table_header(cpu_tester.num)
 
         while True:

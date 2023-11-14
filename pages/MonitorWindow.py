@@ -7,8 +7,8 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QHBoxLayout,
     QCheckBox, QSpinBox, QLineEdit, QComboBox
 
 from pages.ChartTemplate import MonitorChart
-from utils.CpuTester import CpuTester
-from utils.GpuTester import GpuTester
+from utils.CpuMonitor import CpuMonitor
+from utils.GpuMonitor import GpuMonitor
 from utils.Recoder import Recoder
 
 
@@ -19,13 +19,13 @@ class PerformanceMonitorApp(QMainWindow):
         self.current_cpu_chart = None
         self.current_gpu_chart = None
 
-        self.cpu_tester = CpuTester()
-        self.cpu_num = self.cpu_tester.num
+        self.cpu_monitor = CpuMonitor()
+        self.cpu_num = self.cpu_monitor.num
         try:
-            self.gpu_tester = GpuTester()
+            self.gpu_monitor = GpuMonitor()
         except:
-            print("fsdafas")
-        self.gpu_num = self.gpu_tester.num
+            print("No GPU det")
+        self.gpu_num = self.gpu_monitor.num
         self.data = []
 
         self.init_ui()
@@ -189,9 +189,9 @@ class PerformanceMonitorApp(QMainWindow):
 
         timestamp = str(datetime.now()).split('.')[0]
         data_row = [timestamp]
-        data_row.extend(self.cpu_tester.get_statistics())
+        data_row.extend(self.cpu_monitor.get_statistics())
         if self.gpu_checkbox.isChecked():
-            data_row.extend(self.gpu_tester.get_statistics())
+            data_row.extend(self.gpu_monitor.get_statistics())
 
         self.data.append(data_row)
 

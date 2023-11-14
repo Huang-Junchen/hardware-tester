@@ -2,7 +2,7 @@ import pynvml
 from utils.Printer import print_info, print_err
 
 
-class GpuTester:
+class GpuMonitor:
     def __init__(self):
         self.init_driver()
 
