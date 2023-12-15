@@ -4,7 +4,7 @@ from datetime import datetime
 
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QLabel, QPushButton, \
-    QCheckBox, QSpinBox, QLineEdit, QComboBox
+    QCheckBox, QSpinBox, QLineEdit, QComboBox, QScrollArea
 
 from pages.ChartTemplate import MonitorChart
 from utils.CpuMonitor import CpuMonitor
@@ -56,13 +56,6 @@ class PerformanceMonitorApp(QMainWindow):
         self.cpu_checkbox = QCheckBox("CPU", self)
         self.cpu_checkbox.setChecked(True)
         self.gpu_checkbox = QCheckBox("GPU", self)
-        # self.cpu_checkbox.stateChanged.connect(self.cpu_checkbox_state_changed)
-        # self.gpu_checkbox.stateChanged.connect(self.gpu_checkbox_state_changed)
-        # self.checkbox_layout = QHBoxLayout()
-        # self.left_layout.addLayout(self.checkbox_layout)
-        # self.checkbox_layout.addSpacing(20)
-        # self.checkbox_layout.addWidget(self.cpu_checkbox)
-        # self.checkbox_layout.addWidget(self.gpu_checkbox)
         self.left_layout.addWidget(self.cpu_checkbox)
         self.left_layout.addWidget(self.gpu_checkbox)
 
@@ -71,15 +64,18 @@ class PerformanceMonitorApp(QMainWindow):
         self.countdown.setRange(0, 999)
         self.countdown.setMinimum(1)
         self.countdown.setValue(60)
-        self.countdown_label = QLabel("秒", self)
         self.countdown_layout = QHBoxLayout()
         self.left_layout.addLayout(self.countdown_layout)
+        self.countdown_layout.addWidget(QLabel("监控持续时间:"))
         self.countdown_layout.addWidget(self.countdown)
-        self.countdown_layout.addWidget(self.countdown_label)
+        self.countdown_layout.addWidget(QLabel("秒", self))
 
         # 保存文件名
+        self.logname_layout = QHBoxLayout()
         self.filenameLineEdit = QLineEdit(self)
-        self.left_layout.addWidget(self.filenameLineEdit)
+        self.left_layout.addLayout(self.logname_layout)
+        self.logname_layout.addWidget(QLabel("日志文件名："))
+        self.logname_layout.addWidget(self.filenameLineEdit)
 
         self.start_button = QPushButton("开始")
         self.start_button.clicked.connect(self.start)
@@ -152,13 +148,6 @@ class PerformanceMonitorApp(QMainWindow):
             log.write_record_file(','.join(row))
         pass
 
-    # def cpu_checkbox_state_changed(self, state):
-    #     if state == Qt.Checked:
-    #         pass
-    #
-    # def gpu_checkbox_state_changed(self, state):
-    #     if state == Qt.Checked:
-    #         pass
     def on_cpu_list_changed(self, index):
         self.current_cpu_chart = int(self.cpu_list.currentText())
 
@@ -169,7 +158,6 @@ class PerformanceMonitorApp(QMainWindow):
         self.remaining_seconds -= 1
         self.countdown.setValue(self.remaining_seconds)
         if self.remaining_seconds == 0:
-            # TODO 关闭压力测试线程
 
             self.timer.stop()
             self.countdown.setValue(60)
@@ -180,12 +168,7 @@ class PerformanceMonitorApp(QMainWindow):
             self.record_button.setEnabled(True)
             if self.filenameLineEdit.text() == "":
                 self.filenameLineEdit.setText(self.default_filename)
-        # cpu_temperature = self.cpu_tester.get_temperature()
-        # memory_info = psutil.virtual_memory().percent
-        # self.cpu_chart.add_data(float(cpu_temperature[0]))
-        # self.gpu_chart.add_data(memory_info)
 
-        # TODO 创建压力测试线程
 
         timestamp = str(datetime.now()).split('.')[0]
         data_row = [timestamp]
@@ -202,7 +185,6 @@ class PerformanceMonitorApp(QMainWindow):
             self.gpu_chart.draw_line(
                 [float(row[2 * self.cpu_num + self.current_gpu_chart * self.gpu_num + 3]) for row in self.data])
         # log.write_record_file(','.join(data_row))
-
 
 def main():
     app = QApplication(sys.argv)

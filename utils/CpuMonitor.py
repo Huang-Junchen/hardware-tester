@@ -6,7 +6,6 @@ from utils.Printer import print_info
 class CpuMonitor:
     def __init__(self):
         self.num = self.get_num()
-
         self.print_info()
 
     @staticmethod
@@ -30,6 +29,7 @@ class CpuMonitor:
         :return: cpu number
         """
         return len(self.get_info())
+
 
     def get_util(self):
         """

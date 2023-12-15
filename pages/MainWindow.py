@@ -1,6 +1,8 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QTabWidget, QLabel
-from MonitorWindow import PerformanceMonitorApp
+from pages.MonitorWindow import PerformanceMonitorApp
+from pages.StressWindow import StressWindow
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -17,13 +19,10 @@ class MainWindow(QMainWindow):
         tab_widget = QTabWidget()
 
         # 创建参数设置选项卡的内容
-        tab1 = QWidget()
-        tab1_layout = QVBoxLayout(tab1)
-        label1 = QLabel("这是参数设置选项卡的内容")
-        tab1_layout.addWidget(label1)
-        tab_widget.addTab(tab1, "参数设置")
-
         monitorWindow = PerformanceMonitorApp()
+        stressWindow = StressWindow()
+
+        tab_widget.addTab(stressWindow, "压力测试")
         tab_widget.addTab(monitorWindow, "性能监控")
 
         # 将选项卡部件添加到主布局中

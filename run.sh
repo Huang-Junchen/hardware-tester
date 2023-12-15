@@ -15,6 +15,7 @@ echo "
 
 ENV_NAME=venv
 PYTHON_HOME=$ENV_NAME/bin/python
+GPU_BURN_FOLDER=gpu-burn
 
 
 # Create python env
@@ -29,7 +30,18 @@ else
     $PYTHON_HOME -m pip install -r requirements.txt -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
 fi
 
+if [ -d "$GPU_BURN_FOLDER" ]; then
+    echo -e "\033[92m[INFO] gpu-burn has already installed.\033[0m"
+else
+    echo -e "\033[92m[INFO] installing gpu-burn.\033[0m"
+    git clone https://github.com/wilicc/gpu-burn.git
+    cd gpu-burn
+    make
+    cd ..
+fi
+
+
 #source $ENV_NAME/bin/activate
 
 # Run python script
-$PYTHON_HOME main.py "$@"
+$PYTHON_HOME gui.py "$@"
